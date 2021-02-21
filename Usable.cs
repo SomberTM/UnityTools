@@ -20,7 +20,7 @@ public class Usable : MonoBehaviour
     protected void Init()
     {
         this.FormatHoverText();
-        this.HoverText.gameObject.SetActive(false);
+        this.DisplayHoverText(false);
     }
 
     protected void Tick() 
