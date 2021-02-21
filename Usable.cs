@@ -17,13 +17,19 @@ public class Usable : MonoBehaviour
 
     protected bool Available = true;
 
-    protected void Init()
+    void Start() { this.OnStart(); }
+    
+    // Should be called within the Start method (if implemented) from sub classes
+    protected void OnStart()
     {
         this.FormatHoverText();
         this.DisplayHoverText(false);
     }
 
-    protected void Tick() 
+    void Update() { this.OnUpdate(); }
+
+    // Should be called within the Update method (if implemented) from sub classes
+    protected void OnUpdate() 
     {
         foreach (GameObject By in this.UsableBy) {
             // Simple way to check if a GameObject is a player by attempting to get its player controller script
