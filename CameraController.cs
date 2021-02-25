@@ -6,7 +6,6 @@ public class CameraController : MonoBehaviour
 {
     public Camera[] Cameras;
     public int CameraIndex = 0;
-
     public Camera ActiveCamera;
     public bool DrawActiveCameraDirectionGizmo = true;
     public Color ActiveCameraGizmoColor = Color.green;
@@ -65,7 +64,6 @@ public class CameraController : MonoBehaviour
         if (this.DrawActiveCameraDirectionGizmo) {
             Gizmos.color = this.ActiveCameraGizmoColor;
             Gizmos.DrawLine(this.ActiveCamera.transform.position, this.ActiveCamera.transform.position + this.ActiveCamera.transform.forward * this.CameraGizmoLength);
-            Vector3 forward = this.ActiveCamera.transform.forward;
         }
 
         if (this.DrawNonActiveCamerasDirectionGizmo)

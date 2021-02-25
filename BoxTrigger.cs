@@ -47,7 +47,7 @@ public class BoxTrigger : MonoBehaviour
                     this.SetRecentTrigger(By.name, false);
                 }
                 
-                if (AbsBounds(ObjectCollider.bounds).Intersects(AbsBounds(this.TriggerBounds)))
+                if (Utils.AbsoluteBounds(ObjectCollider.bounds).Intersects(Utils.AbsoluteBounds(this.TriggerBounds)))
                 {
                     if (!this.RecentTriggers[By.name])
                     {
@@ -80,15 +80,6 @@ public class BoxTrigger : MonoBehaviour
         }
     }
 
-    private delegate T Function<T>(T x);
-    private Bounds AbsBounds(Bounds bounds) {
-        Function<float> abs = Mathf.Abs;
-        Vector3 size = bounds.size;
-        Bounds AbsoluteBounds = new Bounds(bounds.center, size);
-        AbsoluteBounds.size = new Vector3(abs(size.x), abs(size.y), abs(size.z));
-        return AbsoluteBounds;
-    }
-
     public virtual void OnTrigger() { }
     public virtual void OnTrigger(GameObject TriggeredBy) { }
 
@@ -102,7 +93,7 @@ public class BoxTrigger : MonoBehaviour
         if (this.DrawGizmoTriggerBox) {
             if (this.TriggerableBy.Any(By => {
                 if (By.TryGetComponent<Collider>(out Collider ByCollider))
-                    return AbsBounds(ByCollider.bounds).Intersects(AbsBounds(this.TriggerBounds));
+                    return Utils.AbsoluteBounds(ByCollider.bounds).Intersects(Utils.AbsoluteBounds(this.TriggerBounds));
                 return false;
             })) Gizmos.color = Color.green;
             else Gizmos.color = Color.red;

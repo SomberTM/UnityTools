@@ -5,6 +5,7 @@ using System.Linq;
 
 public class Usable : MonoBehaviour
 {
+
     public GameObject[] UsableBy;
     public float UsableRadius = 5;
     public bool DrawUsableRadiusGizmo = true;
@@ -29,29 +30,25 @@ public class Usable : MonoBehaviour
     void Update() { this.OnUpdate(); }
 
     // Should be called within the Update method (if implemented) from sub classes
-    protected void OnUpdate() 
+    protected void OnUpdate()
     {
+        Camera PlayerCamera;
         foreach (GameObject By in this.UsableBy) {
             // Simple way to check if a GameObject is a player by attempting to get its player controller script
-            if (By.TryGetComponent<PlayerController>(out PlayerController Controller))
+            if (Utils.TryGetComponentInChild<Camera>(By, out PlayerCamera) || By.TryGetComponent<Camera>(out PlayerCamera))
             {
-                // Get the camera assigned to this player
-                Camera PlayerCamera = Controller.GetPlayerCamera();
-
                 Vector3 CameraCenter = PlayerCamera.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, PlayerCamera.nearClipPlane));
-                RaycastHit Hit;
                 
-                if (Physics.Raycast(CameraCenter, PlayerCamera.transform.forward, out Hit, this.UsableRadius))
+                if (Physics.Raycast(CameraCenter, PlayerCamera.transform.forward, out RaycastHit Hit, Mathf.Abs(this.UsableRadius)))
                 {
                     // Check that the given camera is actually looking at us
                     if (Hit.transform.position.Equals(this.transform.position))
                     {
+
                         if (this.Available)
-                        {
                             this.DisplayHoverText(true);
-                        } else {
+                         else 
                             this.DisplayHoverText(false);
-                        }
 
                         if (Input.GetKeyDown(this.UsableKey) && this.Available)
                         {
@@ -61,12 +58,9 @@ public class Usable : MonoBehaviour
                             this.OnUse();
                             this.OnUse(By);
                         }
-                    } else {
-                        this.DisplayHoverText(false);
-                    }
-                } else {
-                    this.DisplayHoverText(false);
-                }
+
+                    } else this.DisplayHoverText(false);                   
+                } else this.DisplayHoverText(false);                
             }
         }
     }
@@ -127,8 +121,8 @@ public class Usable : MonoBehaviour
     }
 
     void OnDrawGizmos() {
-        if (this.DrawUsableRadiusGizmo) {
-            if (this.UsableBy.Any(By => Mathf.Abs(Vector3.Distance(this.transform.position, By.transform.position)) <= this.UsableRadius))
+        if (this.DrawUsableRadiusGizmo && this.UsableBy.Length > 0 && this.Available) {
+            if (this.UsableBy.Any(By => Mathf.Abs(Vector3.Distance(this.transform.position, By.transform.position)) <= Mathf.Abs(this.UsableRadius)))
                 Gizmos.color = this.GizmoUsableColor;
             else
                 Gizmos.color = this.GizmoUnusableColor;
